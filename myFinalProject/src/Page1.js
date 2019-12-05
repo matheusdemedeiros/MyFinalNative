@@ -13,7 +13,51 @@ class Cadastro extends React.Component{
       confirmSenha:''
     }  
   }
+
+  //LIMPAR CAMPOS
+  limparCampos = () =>{
+    this.setState({nome:''});
+    this.setState({senha:''});
+    this.setState({userGit:''});
+    this.setState({confirmSenha:''});
+  }
+
   
+   //INSERCAO DOS DADOS
+   insercaoUsuarios = () =>{
+    
+    var nome = this.state.nome;
+    var senha = this.state.senha;
+    var userGit = this.state.userGit;
+    var confirmSenha = this.confirmSenha;
+
+      if(this.state.nome != "" && this.state.senha != "" && this.state.userGit != "" && this.state.confirmSenha != ""){
+        if(this.state.confirmSenha == this.state.senha){
+        fetch('http://localhost/app/insertUser.php',{
+            method: 'POST',
+            body: JSON.stringify({
+                nome: nome,
+                senha: senha,
+                userGit: userGit,
+              })
+        })
+        .then(response => {
+            return response.json()
+        })
+        .then(json => {
+            Alert.alert(json);
+            this.setState({nome:''});
+            this.setState({senha:''});
+            this.setState({userGit:''});
+            this.setState({confirmSenha:''});
+            })
+          }else{
+            Alert.alert('As senhas devem ser iguais!!');
+          }
+    }else{
+        Alert.alert('Preencha os dados!');
+    }
+}
 
   static navigationOptions = {
     title: 'Cadastro'
@@ -32,41 +76,50 @@ class Cadastro extends React.Component{
         style={styles.input}
         placeholder=" Informe o seu nome"
         value={this.state.nome}
-        onChangeText={() => this.state.nome = value}
+        onChangeText={nome => this.setState({nome})}
         >
         
         </TextInput>
 
         <TextInput
         style={styles.input}
-        placeholder=" Informe o seu username GIT">
+        placeholder=" Informe o seu username GIT"
+        onChangeText={userGit => this.setState({userGit})}
+        value={this.state.userGit}
+        >
         </TextInput>
 
         <TextInput 
         style={styles.input}
-        placeholder=" Defina uma senha">
+        placeholder=" Defina uma senha"
+        onChangeText={senha => this.setState({senha})}
+        value={this.state.senha}
+        >
         </TextInput>
 
         <TextInput
         style={styles.input}
-        placeholder=" Confirme a senha">
+        placeholder=" Confirme a senha"
+        onChangeText={confirmSenha => this.setState({confirmSenha})}
+        value={this.state.confirmSenha}        
+        >
         </TextInput>
               
         <View style={styles.buttons}>
         
           <TouchableOpacity
           style={styles.buttonConfirm}
-          onPress={() => alert.alert(this.state.nome)}
-          //onPress={() => this.props.navigation.navigate('Listagem')}
+          //onPress={() => alert.alert(this.state.nome)}
+          onPress={this.insercaoUsuarios}
           >
-            <Text
+          <Text
             style={styles.textButton}>Confirmar
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
           style={styles.buttonClear}
-          onPress={this.onPress}>
+          onPress={this.limparCampos}>
             <Text
             style={styles.textButton}>Limpar Campos
             </Text>
